@@ -1,0 +1,177 @@
+<head>
+  <style>
+    * {
+      background: #1f1010;
+    }
+    body {
+      color: #6cacc5;
+      font: 18px/1.1 "Source Sans Pro", sans-serif;
+      padding: 5em 0 2em;
+      text-align: center;
+    }
+    h1 {
+      font-weight: lighter;
+      background: -webkit-linear-gradient(45deg, #7b7bc9 40%, #b4bbcc 60%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .calculator {
+      font-size: 20px;
+      margin: auto;
+      width: 18em;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .user {
+      color: #bbb1b1;
+      font-size: 28px;
+      text-align: right;
+      margin-right: 10%;
+      margin-top: -0.5em;
+      margin-bottom: 0.5em;
+    }
+    .erase {
+      margin-bottom: -2em;
+      margin-left: -11.35em;
+    }
+
+    button {
+      background: #0f1a6647;
+      color: #6cacc5;
+      cursor: pointer;
+      font: inherit;
+      width: 3em;
+      padding: 1em;
+      margin: 0.3em;
+      outline: none;
+      border: none;
+    }
+    button:hover {
+      opacity: 0.4;
+    }
+  </style>
+  <script>
+    //Storing my selecmntors in a variable
+    const erase = document.querySelector("#erase");
+    const user = document.querySelector("#user");
+    const ops = document.getElementsByClassName("ops");
+    const equals = document.querySelector(".equals_to");
+    const num = document.getElementsByClassName("num");
+    const period = document.getElementById("period");
+
+    //Initialize variables
+    let calculation = [];
+    let previousNum = "";
+    let currentNum = "";
+    let operator = null;
+
+    //dynamically update the numbers
+    const updateNum = (e) => {
+      if (operator === "" && previousNum !== "") {
+        previousNum = "";
+      }
+      const numText = e.target.innerText;
+      if (currentNum === "" && numText === ".") {
+        currentNum = "0";
+        user.innerHTML = currentNum;
+      } else if (numText === "." && currentNum.includes(".")) {
+        numText = null;
+      } else {
+        currentNum += numText;
+        user.innerHTML = currentNum;
+        console.log(currentNum);
+      }
+    };
+
+    //Operator function
+    const selectOperator = (e) => {
+      if (previousNum !== "") {
+        calculation.push(previousNum);
+        if (
+          calculation[calculation.length - 1] !== ("+" || "-" || "*" || "/")
+        ) {
+          operator = e.target.innerText;
+          calculation.push(operator);
+        }
+        previousNum = "";
+      }
+      if (currentNum !== "") {
+        calculation.push(currentNum);
+        if (
+          calculation[calculation.length - 1] !== ("+" || "-" || "*" || "/")
+        ) {
+          operator = e.target.innerText;
+          calculation.push(operator);
+        }
+      }
+      currentNum = "";
+      // console.log(operator);
+      // console.log(calculation);
+    };
+
+    // Calculation
+    const getResult = (e) => {
+      if (currentNum !== "") {
+        calculation.push(currentNum);
+      }
+      // console.log(e.target.innerText);
+
+      const result = eval(calculation.join("")).toString();
+      // currentNum = result;
+      user.innerHTML = result;
+      previousNum = result;
+      currentNum = "";
+      calculation = [];
+      operator = null;
+      // console.log(typeof result);
+    };
+
+    // Event listener to operator and number buttons using for loop
+    for (let i = 0; i < num.length; i++) {
+      num[i].addEventListener("click", updateNum);
+    }
+    for (i = 0; i < ops.length; i++) {
+      ops[i].addEventListener("click", selectOperator);
+    }
+
+    equals.addEventListener("click", getResult);
+
+    // Erase function
+    erase.onclick = () => {
+      user.innerHTML = "0";
+      currentNum = "";
+      pendingNum = "";
+      calculation = [];
+    };
+  </script>
+</head>
+<body>
+  <h1>My Calculator</h1>
+  <div id="calculator" class="calculator">
+    <button id="erase" class="erase">C</button>
+
+    <div id="user" class="user">0</div>
+
+    <button class="num" unit-num="7">7</button>
+    <button class="num" unit-num="8">8</button>
+    <button class="num" unit-num="9">9</button>
+    <button unit-ops="add" class="ops">+</button>
+
+    <button class="num" unit-num="4">4</button>
+    <button class="num" unit-num="5">5</button>
+    <button class="num" unit-num="6">6</button>
+    <button unit-ops="minus" class="ops">-</button>
+
+    <button class="num" unit-num="1">1</button>
+    <button class="num" unit-num="2">2</button>
+    <button class="num" unit-num="3">3</button>
+    <button unit-ops="multiply" class="ops">*</button>
+
+    <button class="num" unit-num="0">0</button>
+    <button class="num" unit-num="." id="period">.</button>
+    <button unit-ops="equals" class="equals_to">=</button>
+    <button unit-ops="divide" class="ops">/</button><br />
+  </div>
+</body>
