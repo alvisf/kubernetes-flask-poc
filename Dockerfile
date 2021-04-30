@@ -8,7 +8,7 @@ COPY . /app
 
 RUN pip3 --no-cache install Flask
 
-EXPOSE 80
+EXPOSE 5002
 
 ENTRYPOINT ["python3"]
 CMD ["main.py"]
