@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: flask-deployment
+  labels:
+    app: flask-deployment
+
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: flask-pod
+
+  template:
+    metadata:
+      name: flask-pod
+      labels:
+        app: flask-pod
+
+    spec:
+      containers:
+        - name: flask-container
+          image: frontendvm
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+
+kind: Service
+
+metadata:
+  name: flask-service
+  labels:
+    app: flask-service
+
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: flask-pod
